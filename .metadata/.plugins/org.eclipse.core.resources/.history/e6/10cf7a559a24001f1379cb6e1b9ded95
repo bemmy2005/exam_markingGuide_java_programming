@@ -1,0 +1,62 @@
+package Question2;
+
+import java.util.List;
+
+public class School {
+
+	
+	String Teachers;
+	String Students;
+	int totalMoneyEarned=30000;
+	int totalMoneySpent=0;
+	
+	public School(){
+		
+	}
+	public School(List<Teacher> teacherList, List<Student> studentList) {
+		// TODO Auto-generated constructor stub
+	}
+	public String getTeachers() {
+		return getTeachers();
+	}
+
+	public void setTeachers(String teachers) {
+		Teachers = teachers;
+	}
+
+	public String getStudents() {
+		return getStudents();
+	}
+
+	public void setStudents(String students) {
+		Students = students;
+	}
+
+
+
+
+	public void setTotalMoneyEarned() {
+		this.totalMoneyEarned = ;
+	}
+
+	public int getTotalMoneySpent() {
+		return totalMoneySpent;
+	}
+
+	public void setTotalMoneySpent(int Money) {
+		this.totalMoneySpent =0 ;
+	}
+	public int addStudents(Student student) {
+		return 0;
+	}
+		public int addTeachers(Teacher teacher) {
+			return 0;
+	}
+		public String getTotalMoneyEarned() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+
+
+}

@@ -1,0 +1,167 @@
+package question1;
+
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import javax.swing.*;
+
+public class GUIEmployee extends JFrame implements ActionListener {
+
+    JTextField id, name, position;
+    JButton insert, view, update, delete;
+    JLabel identification, names, position_label;
+    JTextArea outputArea;
+
+    // JDBC URL, username, and password of MySQL server
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/yourdatabase";
+    private static final String USER = "yourusername";
+    private static final String PASS = "yourpassword";
+
+    GUIEmployee() {
+        insert = new JButton("Insert");
+        view = new JButton("View");
+        update = new JButton("Update");
+        delete = new JButton("Delete");
+
+        identification = new JLabel("Identification");
+        names = new JLabel("Names");
+        position_label = new JLabel("Position");
+
+        id = new JTextField();
+        name = new JTextField();
+        position = new JTextField();
+
+        this.setTitle("Employee Management");
+        this.setSize(600, 400);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new GridLayout(5, 2));
+
+        this.add(identification);
+        this.add(id);
+        this.add(names);
+        this.add(name);
+        this.add(position_label);
+        this.add(position);
+        this.add(insert);
+        this.add(view);
+        this.add(update);
+        this.add(delete);
+
+        outputArea = new JTextArea();
+        outputArea.setEditable(false);
+        this.add(new JScrollPane(outputArea));
+
+        insert.addActionListener(this);
+        view.addActionListener(this);
+        update.addActionListener(this);
+        delete.addActionListener(this);
+
+        this.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == insert) {
+            insertData();
+        } else if (e.getSource() == view) {
+            viewData();
+        } else if (e.getSource() == update) {
+            updateData();
+        } else if (e.getSource() == delete) {
+            deleteData();
+        }
+    }
+
+    private void insertData() {
+        String empId = id.getText();
+        String empName = name.getText();
+        String empPosition = position.getText();
+
+        String query = "INSERT INTO employees (id, name, position) VALUES (?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, empId);
+            pstmt.setString(2, empName);
+            pstmt.setString(3, empPosition);
+            pstmt.executeUpdate();
+            outputArea.setText("Data inserted successfully.");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            outputArea.setText("Error inserting data.");
+        }
+    }
+
+    private void viewData() {
+        String query = "SELECT * FROM employees";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            StringBuilder sb = new StringBuilder();
+            while (rs.next()) {
+                sb.append("ID: ").append(rs.getString("id")).append(", ");
+                sb.append("Name: ").append(rs.getString("name")).append(", ");
+                sb.append("Position: ").append(rs.getString("position")).append("\n");
+            }
+            outputArea.setText(sb.toString());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            outputArea.setText("Error retrieving data.");
+        }
+    }
+
+    private void updateData() {
+        String empId = id.getText();
+        String empName = name.getText();
+        String empPosition = position.getText();
+
+        String query = "UPDATE employees SET name = ?, position = ? WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, empName);
+            pstmt.setString(2, empPosition);
+            pstmt.setString(3, empId);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                outputArea.setText("Data updated successfully.");
+            } else {
+                outputArea.setText("No record found with the given ID.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            outputArea.setText("Error updating data.");
+        }
+    }
+
+    private void deleteData() {
+        String empId = id.getText();
+
+        String query = "DELETE FROM employees WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, empId);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                outputArea.setText("Data deleted successfully.");
+            } else {
+                outputArea.setText("No record found with the given ID.");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            outputArea.setText("Error deleting data.");
+        }
+    }
+
+    public static void main(String[] args) {
+       // SwingUtilities.invokeLater(() -> new GUIEmployee().setVisible(true));// i added comments here
+        GUIEmployee me=new GUIEmployee();//I added this to see if it works
+    }
+}

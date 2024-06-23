@@ -1,0 +1,195 @@
+//RUKUNDO NDANGIZI DIDIER
+package questionone;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+
+public class GUIEmployee extends JFrame implements ActionListener {
+	  public static void main(String[] args) {
+	        GUIEmployee gui = new GUIEmployee();
+	        gui.setVisible(true);
+	    }
+	private static final long serialVersionUID = 37751259224964374L;
+	private JLabel idLabel;
+    private JLabel nameLabel;
+    private JLabel positionLabel;
+
+    private JTextField idField;
+    private JTextField nameField;
+    private JTextField positionField;
+
+    private JButton insertButton;
+    private JButton viewButton;
+    private JButton updateButton;
+    private JButton deleteButton;
+
+    private Connection connection;
+
+    public GUIEmployee() {
+        frameSetup();
+        initComponents();
+        addComponents();
+        addActionListeners();
+        connectToDatabase();
+    }
+
+    private void frameSetup() {
+        setTitle("Employee Management System");
+        setSize(400, 300);
+        setLayout(null);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void initComponents() {
+        idLabel = new JLabel("ID:");
+        nameLabel = new JLabel("Name:");
+        positionLabel = new JLabel("Position:");
+
+        idField = new JTextField();
+        nameField = new JTextField();
+        positionField = new JTextField();
+
+        insertButton = new JButton("Insert");
+        viewButton = new JButton("View");
+        updateButton = new JButton("Update");
+        deleteButton = new JButton("Delete");
+
+        // Setting bounds for components
+        idLabel.setBounds(50, 50, 80, 30);
+        nameLabel.setBounds(50, 100, 80, 30);
+        positionLabel.setBounds(50, 150, 80, 30);
+
+        idField.setBounds(140, 50, 200, 30);
+        nameField.setBounds(140, 100, 200, 30);
+        positionField.setBounds(140, 150, 200, 30);
+
+        insertButton.setBounds(50, 200, 80, 30);
+        viewButton.setBounds(140, 200, 80, 30);
+        updateButton.setBounds(230, 200, 80, 30);
+        deleteButton.setBounds(320, 200, 80, 30);
+    }
+
+    private void addComponents() {
+        add(idLabel);
+        add(nameLabel);
+        add(positionLabel);
+        add(idField);
+        add(nameField);
+        add(positionField);
+        add(insertButton);
+        add(viewButton);
+        add(updateButton);
+        add(deleteButton);
+    }
+
+    private void addActionListeners() {
+        insertButton.addActionListener(this);
+        viewButton.addActionListener(this);
+        updateButton.addActionListener(this);
+        deleteButton.addActionListener(this);
+    }
+
+    private void connectToDatabase() {
+        try {
+            // Load the MySQL JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            // Connect to the database
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/employee1", "root", "");
+            System.out.println("Connected to database.");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == viewButton) {
+            // View button logic
+            try {
+                String query = "SELECT * FROM employees";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                StringBuilder employeeInfo = new StringBuilder();
+                while (resultSet.next()) {
+                    String id = resultSet.getString("id");
+                    String name = resultSet.getString("name");
+                    String position = resultSet.getString("position");
+                    employeeInfo.append("ID: ").append(id).append(", Name: ").append(name).append(", Position: ").append(position).append("\n");
+                }
+                
+                if (employeeInfo.length() > 0) {
+                    JOptionPane.showMessageDialog(this, employeeInfo.toString(), "Employee List", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No employees found.", "Empty List", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to fetch employees.");
+            }
+        } else if (e.getSource() == updateButton) {
+            // Update button logic
+            String idToUpdate = idField.getText();
+            String newName = nameField.getText();
+            String newPosition = positionField.getText();
+            
+            try {
+                String query = "UPDATE employees SET name=?, position=? WHERE id=?";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, newName);
+                statement.setString(2, newPosition);
+                statement.setString(3, idToUpdate);
+                int rowsUpdated = statement.executeUpdate();
+                if (rowsUpdated > 0) {
+                    JOptionPane.showMessageDialog(this, "Employee updated successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No employee found with the specified ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to update employee.");
+            }
+        } else if (e.getSource() == deleteButton) {
+            // Delete button logic
+            try {
+                String query = "DELETE FROM employees";
+                PreparedStatement statement = connection.prepareStatement(query);
+                int rowsDeleted = statement.executeUpdate();
+                if (rowsDeleted > 0) {
+                    JOptionPane.showMessageDialog(this, "All employees deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No employees found to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to delete employees.");
+            }
+        } else if (e.getSource() == insertButton) {
+            // Insert button logic
+            String id = idField.getText();
+            String name = nameField.getText();
+            String position = positionField.getText();
+            
+            try {
+                String query = "INSERT INTO employees (id, name, position) VALUES (?, ?, ?)";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, id);
+                statement.setString(2, name);
+                statement.setString(3, position);
+                int rowsInserted = statement.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(this, "Employee inserted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to insert employee.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to insert employee.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    }

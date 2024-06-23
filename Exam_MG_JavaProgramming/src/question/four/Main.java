@@ -1,0 +1,39 @@
+package question.four;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Instantiate FileManager to manage file operations
+        FileManager fileManager = new FileManager("myfile.txt");
+        fileManager.createFile(); // Ensure file exists or create it
+
+        // Prompt user for input
+        String choice;
+        do {
+            System.out.print("Enter name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter age: ");
+            int age = scanner.nextInt();
+            scanner.nextLine(); // Consume newline left-over
+
+            // Create a Person object
+            Person person = new Person(name, age);
+
+            // Write Person's data to the file
+            fileManager.writeToFile(person.toString());
+
+            System.out.print("Do you want to enter another person's data? (yes/no): ");
+            choice = scanner.nextLine();
+        } while (choice.equalsIgnoreCase("yes"));
+
+        // Read and display content from the file
+        System.out.println("\nFile content:");
+        fileManager.readFromFile();
+
+        scanner.close();
+    }
+}

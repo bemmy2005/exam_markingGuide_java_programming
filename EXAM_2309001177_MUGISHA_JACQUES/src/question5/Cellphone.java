@@ -1,0 +1,42 @@
+package question5;
+//Jacques MUGISHA 2309001177
+public class Cellphone {
+String manufacture;
+double retailPrice;
+String model;
+
+public Cellphone(String manufacture,double retailPrice,String model){
+	this.manufacture=manufacture;
+	this.retailPrice=retailPrice;
+	this.model=model;
+}
+
+public String getManufacture() {
+	return manufacture;
+}
+
+public void setManufacture(String manufacture) {
+	this.manufacture = manufacture;
+}
+
+public double getRetailPrice() {
+	return retailPrice;
+}
+
+public void setRetailPrice(double retailPrice) {
+	if(retailPrice>=0){
+		this.retailPrice = retailPrice;
+		}else{
+			System.out.println("Invalid retail price");
+		}
+}
+
+public String getModel() {
+	return model;
+}
+
+public void setModel(String model) {
+	this.model = model;
+}
+
+}

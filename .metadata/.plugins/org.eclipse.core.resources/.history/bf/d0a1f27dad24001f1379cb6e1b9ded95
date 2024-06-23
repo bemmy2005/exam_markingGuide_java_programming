@@ -1,0 +1,48 @@
+package Question1;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.color.*;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+public class GUIEmployee extends JFrame implements ActionListener {
+	private JFrame frame;
+	//labels
+	private JLabel id_lb=new JLabel("id");
+	private JLabel name_lb=new JLabel("name");
+	private JLabel position_lb=new JLabel("position");
+	//TextFields
+	private JTextField id_tf=new JTextField("");
+	private JTextField name_tf=new JTextField("");
+	private JTextField position_tf=new JTextField("");
+	//Buttons
+	private JButton Insert_btn=new JButton("Insert");
+	private JButton View_btn=new JButton("View");
+	private JButton Update_btn=new JButton("Update");
+	private JButton Delete_btn=new JButton("Delete");
+	// constructors
+	public abstract class Employee(){
+	abstract create window();
+	setLocationandSize();
+	addcomponents To Frame();
+	addActionEvent();
+	
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+public void setLocationAndsize(){
+	
+}
+
+	public void create window(){
+	private JFrame=new Frame;	
+	}
+	public static void main(String[]args){
+		GUIEmployee lgfrm=new GUIEmployee();	
+	}
+		
+	}

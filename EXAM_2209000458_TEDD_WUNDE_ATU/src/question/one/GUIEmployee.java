@@ -1,0 +1,167 @@
+//TEDD WUNDE ATU 2209000458
+package question.one;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.*;
+
+public class GUIEmployee extends JFrame implements ActionListener{
+	 // Database connection details
+    private static final String URL = "jdbc:mysql://localhost:3306/my_db_employee";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+    //
+	JFrame frame=new JFrame();
+	//labels
+	JLabel id_lb=new JLabel("Id");
+	JLabel name_lb=new JLabel("Name");
+	JLabel position_lb=new JLabel("Position");
+	//textfields
+	JTextField id_tf =new JTextField();
+	JTextField name_tf=new JTextField();
+	JTextField position_tf=new JTextField();
+	//buttons
+	JButton insert_btn =new JButton("Insert");
+	JButton view_btn=new JButton("View");
+	JButton update_btn=new JButton("Update");
+	JButton delete_btn=new JButton("Delete");
+	//
+	  private Connection getConnection() throws SQLException {
+	        return DriverManager.getConnection(URL, USER, PASSWORD);
+	    }
+	
+	//constructor
+	public GUIEmployee(){
+		createWindow();
+		setLocationAndSize();
+		addActionEvent();
+		addComponentsToFrame();
+	}
+	
+	private void addComponentsToFrame() {
+		
+		frame.add(id_lb);
+		frame.add(name_lb);
+		frame.add(position_lb);
+		frame.add(id_tf);
+		frame.add(name_tf);
+		frame.add(position_tf);
+		frame.add(insert_btn);
+		frame.add(view_btn);
+		frame.add(update_btn);
+		frame.add(delete_btn);
+		
+	}
+
+	private void setLocationAndSize() {
+		id_lb.setBounds(50,50,100,30);
+		name_lb.setBounds(50,125,100,30);
+		position_lb.setBounds(50,200,100,30);
+		id_tf.setBounds(180,50,200,30);
+		name_tf.setBounds(180,125,200,30);
+		position_tf.setBounds(180,200,200,30);
+		insert_btn.setBounds(20,250,80,30);
+		view_btn.setBounds(120,250,80,30);
+		update_btn.setBounds(210,250,80,30);
+		delete_btn.setBounds(300,250,80,30);
+		
+		
+		
+	}
+
+	private void addActionEvent() {
+		
+		insert_btn.addActionListener(this);
+		view_btn.addActionListener(this);
+		update_btn.addActionListener(this);
+		delete_btn.addActionListener(this);
+		
+	}
+
+	private void createWindow() {
+		
+		
+		frame=new JFrame();
+		frame.setTitle("Employee");
+		frame.setBounds(20,20,410,350);
+		frame.setVisible(true);
+		frame.setResizable(true);
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setBackground(Color.GRAY);
+		
+		
+		
+		
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==insert_btn){
+			try (Connection conn = getConnection()) {//this error you put the name of the fields not including the datatype
+                String query = ("INSERT INTO Employee(String id,String name,String Position) VALUES (?,?,?)");
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, id_tf.getText());
+                stmt.setString(2, name_tf.getText());
+                stmt.setString(3, position_tf.getText());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame, "Information saved!");
+            } catch (SQLException a) {
+                a.printStackTrace();
+            }
+			
+		}
+		if(e.getSource()==view_btn){
+			try (Connection conn = getConnection()) {
+                String query = "SELECT * FROM Employee WHERE Id = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setInt(1, Integer.parseInt(id_tf.getText()));
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    id_tf.setText(rs.getString("Id"));
+                    name_tf.setText(rs.getString("Name"));
+                    position_tf.setText(rs.getString("Position"));
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Employee not found!");
+                }
+            } catch (SQLException a) {
+                a.printStackTrace();
+            }
+		}
+		if(e.getSource()==update_btn){
+			try (Connection conn = getConnection()) {
+                String query = "UPDATE Employee SET Id= ?, Name = ?, Position = ? WHERE Id = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, id_tf.getText());
+                stmt.setString(2, name_tf.getText());
+                stmt.setString(3, position_tf.getText());
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame, "Employee successfully updated!");
+            } catch (SQLException a) {
+                a.printStackTrace();
+            }
+		}
+		if(e.getSource()==delete_btn){
+			try (Connection conn = getConnection()) {
+                String query = "DELETE FROM Employee WHERE id = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setInt(1, Integer.parseInt(id_tf.getText()));
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame, "Employee successfully deleted!");
+            } catch (SQLException a) {
+                a.printStackTrace();
+            }
+		}
+	}
+	public static void main(String[] args){
+		GUIEmployee emp=new GUIEmployee();
+	}
+
+	
+    
+}

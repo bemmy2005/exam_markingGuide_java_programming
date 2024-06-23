@@ -1,0 +1,52 @@
+package question.four;
+
+import java.io.*;
+
+public class FileManager {
+    private String fileName;
+
+    public FileManager(String fileName) {
+        this.fileName = fileName;
+    }
+
+    // Method to create a new file
+    public void createFile() {
+        File file = new File(fileName);
+        try {
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while creating the file.");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to write data to the file
+    public void writeToFile(String data) {
+        try (FileWriter writer = new FileWriter(fileName, true);
+             BufferedWriter bw = new BufferedWriter(writer)) {
+            bw.write(data);
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to read from the file and display content
+    public void readFromFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+        }
+    }
+}
+
